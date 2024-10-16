@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 import "./Structs.sol";
-contract Events {
+ 
     // Emitted when a new market is created
     event MarketCreated(
         Market market
-        );
+    );
 
     // Emitted when shares are bought for a specific outcome in a market
    event ShareBought(
@@ -32,4 +32,4 @@ contract Events {
        Outcome outcome,
         uint256 amount
     );
-}
+
