@@ -1,7 +1,6 @@
 {
-  "name": "basespeculate",
+  "name": "backend-contracts",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -9,13 +8,12 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "description": "",
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^5.0.0",
     "hardhat": "^2.22.13"
   },
   "dependencies": {
-    "@openzeppelin/contracts": "^5.0.2",
-    "dotenv": "^16.4.5",
-    "ethers": "^6.13.4"
+    "dotenv": "^16.4.5"
   }
 }

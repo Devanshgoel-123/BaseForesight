@@ -1,18 +1,17 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.27;
+pragma solidity ^0.8.26;
 
 import "./struct.sol";
 import "./events.sol";
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "./FPMMInternal.sol";
 
 
 contract FPMMMarket {
      using FPMMInternal for *;
-     IERC20 public collateralToken;
+     address public collateralToken;
     uint256 public numMarkets;
     uint32 public fee;
-    uint128 public liquidityPool;
+    uint256 public liquidityPool;
     uint256 public feesAccrued;
     address public owner;
     address public treasuryWallet;
@@ -22,14 +21,12 @@ contract FPMMMarket {
     mapping(uint256 => mapping(address => mapping(uint32 => uint256))) public balances;
     mapping(uint256 => mapping(uint32 => FPMMStructs.Outcome)) public outcomes;
 
-    constructor(  // check this for the collateral token how to assign it 
-        IERC20 _collateralToken,
-        uint32 _fee,
-        address _owner
+    constructor(
+        uint32 _fee
     ) {
-        collateralToken = _collateralToken;
+        
         fee = _fee;
-        owner = _owner;
+        owner = msg.sender;
     }
 
     function getCollateralToken() public view returns (address) {
@@ -45,7 +42,7 @@ contract FPMMMarket {
         fee = _fee;
     }
 
-    function currentLiquidity() public view returns (uint128) {
+    function currentLiquidity() public view returns (uint256) {
         return liquidityPool;
     }
 
@@ -79,36 +76,27 @@ contract FPMMMarket {
     market.isSettled = true;
    }
 
-   function addFunding(uint128 addedFunds) public {
-    require(addedFunds > 0, "Added funds must be positive");
-    require(
-        collateralToken.transferFrom(msg.sender, address(this), addedFunds),
-        "Transfer failed"
-    );
+   function addFunding() public payable {
+    require(msg.value > 0, "Added funds must be positive");
+    liquidityBalance[msg.sender] += msg.value;
+    liquidityPool += msg.value;
     
-    liquidityBalance[msg.sender] += addedFunds;
-    liquidityPool += addedFunds;
-    
-    emit FPMMEvents.FPMMFundingAdded(msg.sender, addedFunds);
+    emit FPMMEvents.FPMMFundingAdded(msg.sender, msg.value);
 }
 
-function removeFunding(uint128 fundsToRemove) public {
+function removeFunding(uint128 fundsToRemove) public payable {
     require(fundsToRemove > 0, "Funds must be positive");
-    require(fundsToRemove <= liquidityPool, "Cannot remove more than pool");
+    require(fundsToRemove <= address(this).balance, "Cannot remove more than pool");
     require(liquidityBalance[msg.sender] >= fundsToRemove, "Insufficient funds");
     
-    uint256 amount = (feesAccrued * fundsToRemove) / liquidityPool;
+    uint256 amount = (feesAccrued * fundsToRemove) / address(this).balance;
     uint256 withdrawableAmount = feesWithdrawableBy(msg.sender);
     require(withdrawableAmount > 0, "Require non-zero balances");
     
-    require(
-        collateralToken.transfer(msg.sender, withdrawableAmount),
-        "Transfer failed"
-    );
+    payable(msg.sender).transfer(withdrawableAmount);
     
     feesAccrued -= amount;
     liquidityBalance[msg.sender] -= fundsToRemove;
-    liquidityPool -= fundsToRemove;
     
     emit FPMMEvents.FPMMFundingRemoved(msg.sender, fundsToRemove, amount);
 }
@@ -165,26 +153,18 @@ function removeFunding(uint128 fundsToRemove) public {
     return returnAmountMinusFees + newOutcomeBalance - poolBalances[outcomeIndex];
     }
 
-    function buy(
+  function buy(
     uint256 marketId,
-    uint128 investmentAmount,
     uint32 outcomeIndex,
     uint128 minOutcomeTokensToBuy
-) public {
+) public payable {
+    uint128 investmentAmount = uint128(msg.value);
     uint128 outcomeTokensToBuy = calcBuyAmount(marketId, investmentAmount, outcomeIndex);
     require(outcomeTokensToBuy >= minOutcomeTokensToBuy, "Receiving less than expected");
 
-    require(
-        collateralToken.transferFrom(msg.sender, address(this), investmentAmount),
-        "Transfer failed"
-    );
-
     feesAccrued += (investmentAmount * fee) / 100;
 
-    require(
-        collateralToken.transfer(treasuryWallet, (investmentAmount * treasuryFee) / 100),
-        "Treasury transfer failed"
-    );
+    payable(treasuryWallet).transfer((investmentAmount * treasuryFee) / 100);
 
     uint128 investmentAmountMinusFees = investmentAmount - 
         (investmentAmount * fee / 100) - 
@@ -209,7 +189,8 @@ function removeFunding(uint128 fundsToRemove) public {
         outcomeTokensToBuy
     );
  } 
- function sell(
+
+function sell(
     uint256 marketId,
     uint128 returnAmount,
     uint32 outcomeIndex,
@@ -238,10 +219,7 @@ function removeFunding(uint128 fundsToRemove) public {
         false
     );
 
-    require(
-        collateralToken.transfer(msg.sender, returnAmount),
-        "Transfer failed"
-    );
+    payable(msg.sender).transfer(returnAmount);
 
     emit FPMMEvents.FPMMSell(
         msg.sender,
@@ -250,6 +228,7 @@ function removeFunding(uint128 fundsToRemove) public {
         outcomeTokensToSell
     );
 }
+
 function getUserBalance(address user) public view returns (uint256) {
     return liquidityBalance[user];
 }
@@ -319,14 +298,10 @@ function claimWinnings(uint256 marketId, uint32 outcomeIndex) public {
     uint256 winnings = userBalance * (100 - fee) / 100;
     balances[marketId][msg.sender][outcomeIndex] = 0;
     
-    require(
-        collateralToken.transfer(msg.sender, userBalance - winnings),
-        "Transfer failed"
-    );
-    require(
-        collateralToken.transfer(msg.sender, winnings),
-        "Transfer failed"
-    );
+    // Transfer the winnings to the user
+    (bool success, ) = payable(msg.sender).call{value: winnings}("");
+    require(success, "Transfer failed");
+
 }
 
 function getMarket(uint256 marketId) public view returns (FPMMStructs.FPMMMarket memory) {

@@ -3,7 +3,7 @@ import "@nomicfoundation/hardhat-toolbox";
 import dotenv from "dotenv" 
 dotenv.config();
 const config: HardhatUserConfig = {
-  solidity: "0.8.27",
+  solidity: "0.8.26",
   networks:{
     sepolia:{
       url:`https://base-sepolia.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY}`,
