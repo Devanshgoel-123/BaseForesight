@@ -37,6 +37,7 @@ app.post("/create-market", async (req, res) => {
   app.get("/get-all-markets", async (req, res) => {
     try {
       const data = await getAllMarkets();
+      console.log(data)
       res.status(200).send(data);
     } catch (error) {
       console.error("Error getting all markets:", error);

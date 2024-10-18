@@ -20,9 +20,7 @@ export default async function createMarket({
   const {contractAddress,abi}=contractData;
   const provider = new ethers.JsonRpcProvider(`${process.env.ALCHEMY_NODE_API}`);
   const signer = new ethers.Wallet(`${process.env.PRIVATE_KEY}`, provider);
-  // Convert deadline to Unix timestamp
   const deadlineIn = Math.floor(new Date(deadline).getTime() / 1000);
-
   const marketContract =new ethers.Contract(contractAddress,abi, signer); 
 try{
   const tx = await marketContract.initMarket(
@@ -73,12 +71,12 @@ try{
       {
         name: outcome1,
         winner: false,
-        num_shares_in_pool: parseInt(currentLiq.toString()) / 10 / 2,
+        num_shares_in_pool: parseInt((currentLiq*2569/10**11).toString()) / 10 / 2,
       },
       {
         name: outcome2,
         winner: false,
-        num_shares_in_pool: parseInt(currentLiq.toString()) / 10 / 2,
+        num_shares_in_pool: parseInt((currentLiq*2569/10**11).toString()) / 10 / 2,
       },
     ],
     fightimage: fightImage,
