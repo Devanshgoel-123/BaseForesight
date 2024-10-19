@@ -1,9 +1,8 @@
 import { createClient } from "@supabase/supabase-js";
-import { ethers } from "ethers";
+import {ethers}  from "ethers";
 import contractData from "./setup.js";
 import dotenv from "dotenv";
 dotenv.config()
-
 
 // Function to create a market
 export default async function createMarket({
@@ -18,7 +17,7 @@ export default async function createMarket({
 }) {
   console.log("I am active now");
   const {contractAddress,abi}=contractData;
-  const provider = new ethers.JsonRpcProvider(`${process.env.ALCHEMY_NODE_API}`);
+  const provider = new ethers.providers.JsonRpcProvider(`${process.env.ALCHEMY_NODE_API}`);
   const signer = new ethers.Wallet(`${process.env.PRIVATE_KEY}`, provider);
   const deadlineIn = Math.floor(new Date(deadline).getTime() / 1000);
   const marketContract =new ethers.Contract(contractAddress,abi, signer); 
@@ -34,17 +33,14 @@ try{
   console.log("Creating market...");
   const receipt = await tx.wait();
   console.log("✅ Market has been created -> Transaction Hash:", receipt.transactionHash);
-
-  // Fetch current liquidity
+  
   const currentLiq = await marketContract.currentLiquidity();
-  console.log(currentLiq);
-  // Initialize Supabase client
+  console.log(currentLiq); 
   const supabase = createClient(
     `${process.env.SUPA_BASE_URL}`,
     `${process.env.SUPA_BASE_KEY}`
   );
 
-  // Get the latest market ID
   const { data: latestMarket, error: latestMarketError } = await supabase
       .from("Markets")
       .select("market_id")
@@ -52,11 +48,10 @@ try{
       .limit(1)
       .single();
 
-    // if (latestMarketError) {
-    //   throw new Error(`Error fetching latest market ID: ${latestMarketError.message}`);
-    // }
   const newMarketId = latestMarket ? latestMarket.market_id + 1 : 1;
-  
+  const sharesInPool = (currentLiq); 
+  const outcomeShares = parseFloat(sharesInPool)/2;
+  console.log(outcomeShares);
   const { data, error } = await supabase.from("Markets").insert({
     market_id: newMarketId,
     active: true,
@@ -71,12 +66,12 @@ try{
       {
         name: outcome1,
         winner: false,
-        num_shares_in_pool: parseInt((currentLiq*2569/10**11).toString()) / 10 / 2,
+        num_shares_in_pool: outcomeShares,
       },
       {
         name: outcome2,
         winner: false,
-        num_shares_in_pool: parseInt((currentLiq*2569/10**11).toString()) / 10 / 2,
+        num_shares_in_pool:outcomeShares,
       },
     ],
     fightimage: fightImage,

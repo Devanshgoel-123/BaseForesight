@@ -4,13 +4,12 @@ import dotenv from "dotenv"
 dotenv.config();
 async function connectContract() {
   try {
-    const provider = new ethers.JsonRpcProvider(`${process.env.ALCHEMY_NODE_API}`);
+    const provider = new ethers.providers.JsonRpcProvider(`${process.env.ALCHEMY_NODE_API}`);
     const signer = new ethers.Wallet(`${process.env.PRIVATE_KEY}`, provider);    
     const abi = Abi.abi;
-    const contractAddress = "0xdE1f6D6D0A232433f9B543d9663049b26F68B4ac"; // Contract address of the base Sepolia network the nwew on  
+    const contractAddress = "0xC1aC8C8dCCD1007aBCde96F065AFABFe36b242C3"; // Contract address of the base Sepolia network the nwew on  
     const contractRead = new ethers.Contract(contractAddress, abi, provider);
-    console.log("✅ Market contract connected at =", await contractRead.getAddress());
-
+   
     return {
       provider,
       signer,

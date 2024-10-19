@@ -3,20 +3,22 @@ import contractData from "./setup.js";
 
 export default async function addLiquidity() {
     const { abi, contractAddress } = contractData;
-    const provider = new ethers.JsonRpcProvider(`${process.env.ALCHEMY_NODE_API}`);
+    const provider = new ethers.providers.JsonRpcProvider(`${process.env.ALCHEMY_NODE_API}`);
     const signer = new ethers.Wallet(`${process.env.PRIVATE_KEY}`, provider);
     const marketContract = new ethers.Contract(contractAddress, abi, signer);
-    const amountInWei = ethers.parseEther("0.001");
+    const amountInWei = ethers.utils.parseEther("0.001");
+    console.log("Amount in Wei is :",amountInWei);
    const liquid=await marketContract.currentLiquidity();
    console.log(liquid);
     console.log("Starting liquidity addition process...");
       try {
         const balance = await provider.getBalance(await signer.getAddress());
-        console.log("User's ETH balance:", ethers.formatEther(balance));
+        console.log("User's ETH balance:", ethers.utils.formatEther(balance));
         console.log("Adding liquidity to the market...");
+        console.log(amountInWei);
         const addFundingTx = await marketContract.addFunding({
             value: amountInWei,
-            gasLimit: 300000 
+            gasLimit: 3000000
         });
 
         console.log("Transaction sent. Waiting for confirmation...");

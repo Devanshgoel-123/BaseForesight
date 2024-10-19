@@ -5,13 +5,30 @@ import createMarket from "./functions/createMarket.js";
 import getAllMarkets  from "./functions/getAllMarkets.js";
 import getCurrentMarket from "./functions/getCurrentMarket.js";
 import updateMarket from "./functions/updateMarket.js";
+import getOutcomes from "./functions/getOutcomes.js";
 import addLiquidity from "./functions/AddLiquidity.js";
+import getMinSharesBuy from "./functions/getMinSharesBuy.js";
 const app=express();
 const PORT=4000;
 
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(express.json());
 app.use(cors());
+
+app.get('/min-shares-buy/:marketId/:outcomeIndex/:betAmount',async(req,res)=>{
+  try {
+    const {betAmount,outcomeIndex,marketId}=req.params;
+    if (!betAmount || isNaN(betAmount)) {
+      return res.status(400).send("Invalid bet amount");
+    }
+    const data = await getMinSharesBuy(betAmount,marketId,outcomeIndex);
+    res.status(200).send(data._hex);
+  } catch (error) {
+    console.error("Error getting current market:", error);
+    res.status(500).send("An error occurred while getting current market");
+  }
+})
+
 
 app.post("/create-market", async (req, res) => {
   console.log(req.body);
@@ -27,7 +44,17 @@ app.post("/create-market", async (req, res) => {
   app.get("/get-current-market/:market_id", async (req, res) => {
     try {
       const data = await getCurrentMarket(req.params.market_id);
+      console.log(data);
       res.status(200).send(data);
+    } catch (error) {
+      console.error("Error getting current market:", error);
+      res.status(500).send("An error occurred while getting current market");
+    }
+  })
+  app.get("/get-outcomes/:market_id", async (req, res) => {
+    try {
+      const {outcome1,outcome2} = await getOutcomes(req.params.market_id);
+      res.status(200).send([outcome1,outcome2]);
     } catch (error) {
       console.error("Error getting current market:", error);
       res.status(500).send("An error occurred while getting current market");
