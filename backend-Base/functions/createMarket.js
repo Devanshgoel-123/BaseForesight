@@ -82,7 +82,9 @@ try{
   } else {
     console.log("Market inserted into Supabase:", data);
   }
+  return "Market Created Successfully"
 }catch(err){
+  return "Some error has Occured"
   console.log(err);
 }
   

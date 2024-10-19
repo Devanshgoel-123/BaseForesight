@@ -8,6 +8,8 @@ import updateMarket from "./functions/updateMarket.js";
 import getOutcomes from "./functions/getOutcomes.js";
 import addLiquidity from "./functions/AddLiquidity.js";
 import getMinSharesBuy from "./functions/getMinSharesBuy.js";
+import getMarketsforUsers from "./functions/getMarketsForUser.js";
+import getMinAmountSell from "./functions/getMinAmountOnSellShares.js";
 const app=express();
 const PORT=4000;
 
@@ -15,6 +17,19 @@ app.use(bodyParser.urlencoded({extended:true}));
 app.use(express.json());
 app.use(cors());
 
+app.get('/min-amount-sell/:marketId/:outcomeIndex/:betAmount',async(req,res)=>{
+  try {
+    const {betAmount,outcomeIndex,marketId}=req.params;
+    if (!betAmount || isNaN(betAmount)) {
+      return res.status(400).send("Invalid bet amount");
+    }
+    const data = await getMinAmountSell(betAmount,marketId,outcomeIndex);
+    res.status(200).send(data._hex);
+  } catch (error) {
+    console.error("Error getting current market:", error);
+    res.status(500).send("An error occurred while getting current market");
+  }
+})
 app.get('/min-shares-buy/:marketId/:outcomeIndex/:betAmount',async(req,res)=>{
   try {
     const {betAmount,outcomeIndex,marketId}=req.params;
@@ -28,14 +43,26 @@ app.get('/min-shares-buy/:marketId/:outcomeIndex/:betAmount',async(req,res)=>{
     res.status(500).send("An error occurred while getting current market");
   }
 })
-
+app.get('/getmarketsforUser/:address',async(req,res)=>{
+  try{
+    const address=req.params.address;
+    const response=await getMarketsforUsers(address);
+    console.log("THe received response is :",response);
+    res.status(200).send(response)
+  }catch(err){
+    console.log(err);
+  }
+})
 
 app.post("/create-market", async (req, res) => {
-  console.log(req.body);
     try {
       let { deadline, description, icon, question, outcome1, outcome2, category, fightImage } = req.body;
-       await createMarket({deadline, description, icon, question, outcome1, outcome2, category, fightImage});
-      res.status(200).send("Market Created!");
+       const response=await createMarket({deadline, description, icon, question, outcome1, outcome2, category, fightImage});
+       if(response==="Market Created Successfully"){
+        res.status(200).send("Market Created!");
+       }else{
+        res.status(400).send("Some Error has Occured")
+       }
     } catch (error) {
       console.error("Error creating market:", error);
       res.status(500).send("An error occurred while creating market");
@@ -86,10 +113,16 @@ app.post("/create-market", async (req, res) => {
   app.get('/add-liquidity',async (req,res)=>{
     try{
       console.log("Adding liquidity")
-     await addLiquidity();
-     res.status(200).send({
-      message:"Added Liquidity"
-     })
+     constresponse=await addLiquidity();
+     if(res=="Error has occured while adding liquidity"){
+       res.status(500).send({
+        message:"Some error while adding"
+      })
+     }else{
+      res.status(200).send({
+        message:"Added Liquidity"
+       })
+     }
     }catch(err){
       console.log(err);
     }  

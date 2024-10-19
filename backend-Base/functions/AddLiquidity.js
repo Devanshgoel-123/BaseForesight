@@ -20,20 +20,16 @@ export default async function addLiquidity() {
             value: amountInWei,
             gasLimit: 3000000
         });
-
         console.log("Transaction sent. Waiting for confirmation...");
         console.log("Transaction hash:", addFundingTx.hash);
-
-       
         const receipt = await addFundingTx.wait();
         if (receipt.status === 0) {
             throw new Error("Transaction failed");
         }
-
         console.log("Liquidity added successfully!");
         console.log("Transaction hash:", receipt.transactionHash);
         console.log("Gas used:", receipt.gasUsed.toString());
-
+        return receipt.transactionHash;
     } catch (error) {
         console.error("Error adding liquidity:", error);
         if (error.reason) {
@@ -45,5 +41,6 @@ export default async function addLiquidity() {
         if (error.receipt) {
             console.error("Transaction receipt:", error.receipt);
         }
+        return "Error has occured while adding liquidity"
     }
 }

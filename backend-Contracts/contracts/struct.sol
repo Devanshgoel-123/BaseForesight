@@ -14,4 +14,10 @@ library FPMMStructs {
         bool isActive;
         bool isSettled;
     }
+    struct UserMarketBets {
+        uint256 marketId;
+        uint256[] bets;
+        bool isActive;
+        bool isSettled;
+    }
 }

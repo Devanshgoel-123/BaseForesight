@@ -32,7 +32,7 @@ contract FPMMMarket {
         owner = msg.sender;
     }
     function normalizeEthAmount(uint256 ethAmount) internal pure returns (uint256) {
-        return ethAmount / (10**12); // Convert from 18 to 6 decimals (18 - 6 = 12)
+        return ethAmount / (10**12); 
     }
 
     
@@ -41,7 +41,7 @@ contract FPMMMarket {
         return normalizedEth * ETH_TO_USDC_RATE;
     }
 
-    // Helper function to convert USDC amount to ETH equivalent (both in 6 decimals)
+    
     function convertUsdcToEth(uint256 usdcAmount) public pure returns (uint256) {
         return (usdcAmount * SCALING_FACTOR) / ETH_TO_USDC_RATE;
     }
@@ -179,6 +179,7 @@ function removeFunding(uint128 fundsToRemove) public payable {
 }
 
 
+
   function buy(
         uint256 marketId,
         uint32 outcomeIndex,
@@ -258,6 +259,7 @@ function removeFunding(uint128 fundsToRemove) public payable {
             outcomeTokensToSell
         );
     }
+    
 
 function getUserBalance(address user) public view returns (uint256) {
     return liquidityBalance[user];
@@ -266,6 +268,27 @@ function getUserBalance(address user) public view returns (uint256) {
 function getUserMarketShare(address user, uint256 marketId, uint32 outcomeIndex) public view returns (uint256) {
     return balances[marketId][user][outcomeIndex];
 }
+function getAllUserBets(address user) public view returns (FPMMStructs.UserMarketBets[] memory) {
+        FPMMStructs.UserMarketBets[] memory allBets = new FPMMStructs.UserMarketBets[](numMarkets);
+
+        for (uint256 i = 1; i <= numMarkets; i++) {
+            FPMMStructs.FPMMMarket storage market = markets[i];
+            uint256[] memory marketBets = new uint256[](market.numOutcomes);
+
+            for (uint32 j = 0; j < market.numOutcomes; j++) {
+                marketBets[j] = balances[i][user][j];
+            }
+
+            allBets[i - 1] = FPMMStructs.UserMarketBets({
+                marketId: i,
+                bets: marketBets,
+                isActive: market.isActive,
+                isSettled: market.isSettled
+            });
+        }
+
+        return allBets;
+    }
 
 function initMarket(string[] memory outcomeNames, uint128 deadline) public {
         require(outcomeNames.length > 0, "Outcomes array cannot be empty");
