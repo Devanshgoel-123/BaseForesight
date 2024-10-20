@@ -19,8 +19,10 @@ app.use(express.json());
 app.use(cors());
 
 app.post("/settleMarket",async(req,res)=>{
+  console.log("Trying to Settle");
   try{
     const {marketId}=req.body;
+    console.log("trying to settle")
     const response=await settleMarket(marketId);
     return response;
   }catch(err){
