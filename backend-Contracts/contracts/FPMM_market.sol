@@ -310,8 +310,7 @@ function initMarket(string[] memory outcomeNames, uint128 deadline) public {
         });
         markets[marketId] = market;
         
-        // Note: Now using 6 decimals for calculations
-        uint128 outcomeTokens = uint128(currentFunding / numOutcomes);
+        uint128 outcomeTokens = uint128(currentFunding / numOutcomes/10);
         
         for (uint32 i = 0; i < numOutcomes; i++) {
             outcomes[marketId][i] = FPMMStructs.Outcome({

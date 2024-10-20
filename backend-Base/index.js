@@ -113,7 +113,7 @@ app.post("/create-market", async (req, res) => {
   app.get('/add-liquidity',async (req,res)=>{
     try{
       console.log("Adding liquidity")
-     constresponse=await addLiquidity();
+     const response=await addLiquidity();
      if(res=="Error has occured while adding liquidity"){
        res.status(500).send({
         message:"Some error while adding"
