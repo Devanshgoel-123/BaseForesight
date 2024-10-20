@@ -226,7 +226,7 @@ function removeFunding(uint128 fundsToRemove) public payable {
     ) public {
         uint256 usdcEquivalent = convertEthToUsdc(returnAmount); // Scale up before conversion
         
-        uint128 outcomeTokensToSell = calcSellAmount(marketId, uint128(usdcEquivalent), outcomeIndex);
+        uint128 outcomeTokensToSell = calcSellAmount(marketId, returnAmount, outcomeIndex);
         require(outcomeTokensToSell <= maxOutcomeTokensToSell, "Selling more than expected");
         require(
             outcomeTokensToSell <= balances[marketId][msg.sender][outcomeIndex],
