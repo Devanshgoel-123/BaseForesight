@@ -19,16 +19,16 @@ export default async function updateMarket(marketId, outcomeIndex, amount, isBuy
         let outcome = currentMarket.outcomes[i];
         if (isBuy) {
             if (i == outcomeIndex) {
-                outcome.num_shares_in_pool = parseInt(outcome.num_shares_in_pool) + parseInt(amount*2569) - parseInt(sharesUpdated);
+                outcome.num_shares_in_pool = parseInt(outcome.num_shares_in_pool) + parseInt(amount) - parseInt(sharesUpdated);
             } else {
-                outcome.num_shares_in_pool = parseInt(outcome.num_shares_in_pool) + parseInt(amount*2569);
+                outcome.num_shares_in_pool = parseInt(outcome.num_shares_in_pool) + parseInt(amount);
             }
         }
         else {
             if (i == outcomeIndex) {
-                outcome.num_shares_in_pool = parseInt(outcome.num_shares_in_pool) + parseInt(sharesUpdated) - parseInt(amount*2569);
+                outcome.num_shares_in_pool = parseInt(outcome.num_shares_in_pool) + parseInt(sharesUpdated) - parseInt(amount);
             } else {
-                outcome.num_shares_in_pool = parseInt(outcome.num_shares_in_pool) - parseInt(amount*2569);
+                outcome.num_shares_in_pool = parseInt(outcome.num_shares_in_pool) - parseInt(amount);
             }
         }
     }

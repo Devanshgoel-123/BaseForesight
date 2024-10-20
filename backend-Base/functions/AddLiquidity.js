@@ -6,7 +6,7 @@ export default async function addLiquidity() {
     const provider = new ethers.providers.JsonRpcProvider(`${process.env.ALCHEMY_NODE_API}`);
     const signer = new ethers.Wallet(`${process.env.PRIVATE_KEY}`, provider);
     const marketContract = new ethers.Contract(contractAddress, abi, signer);
-    const amountInWei = ethers.utils.parseEther("0.1");
+    const amountInWei = ethers.utils.parseEther("0.08");
     console.log("Amount in Wei is :",amountInWei);
    const liquid=await marketContract.currentLiquidity();
    console.log(liquid);

@@ -10,6 +10,7 @@ import addLiquidity from "./functions/AddLiquidity.js";
 import getMinSharesBuy from "./functions/getMinSharesBuy.js";
 import getMarketsforUsers from "./functions/getMarketsForUser.js";
 import getMinAmountSell from "./functions/getMinAmountOnSellShares.js";
+import settleMarket from "./functions/settleMarket.js";
 const app=express();
 const PORT=4000;
 
@@ -17,6 +18,15 @@ app.use(bodyParser.urlencoded({extended:true}));
 app.use(express.json());
 app.use(cors());
 
+app.post("/settleMarket",async(req,res)=>{
+  try{
+    const {marketId}=req.body;
+    const response=await settleMarket(marketId);
+    return response;
+  }catch(err){
+    console.log(err);
+  }
+})
 app.get('/min-amount-sell/:marketId/:outcomeIndex/:betAmount',async(req,res)=>{
   try {
     const {betAmount,outcomeIndex,marketId}=req.params;
@@ -115,9 +125,7 @@ app.post("/create-market", async (req, res) => {
       console.log("Adding liquidity")
      const response=await addLiquidity();
      if(res=="Error has occured while adding liquidity"){
-       res.status(500).send({
-        message:"Some error while adding"
-      })
+       res.status(500).send(response)
      }else{
       res.status(200).send({
         message:"Added Liquidity"
