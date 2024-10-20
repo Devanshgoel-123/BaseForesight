@@ -12,7 +12,7 @@ import getMarketsforUsers from "../functions/getMarketsForUser.js";
 import getMinAmountSell from "../functions/getMinAmountOnSellShares.js";
 import settleMarket from "../functions/settleMarket.js";
 const app=express();
-const PORT=3000;
+const PORT=4000;
 
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(express.json());
