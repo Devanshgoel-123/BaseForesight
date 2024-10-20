@@ -66,12 +66,12 @@ try{
       {
         name: outcome1,
         winner: false,
-        num_shares_in_pool: outcomeShares,
+        numSharesInPool: outcomeShares,
       },
       {
         name: outcome2,
         winner: false,
-        num_shares_in_pool:outcomeShares,
+        numSharesInPool:outcomeShares,
       },
     ],
     fightimage: fightImage,

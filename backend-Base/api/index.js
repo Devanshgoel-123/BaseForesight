@@ -1,18 +1,18 @@
 import express from "express"
 import cors from "cors";
 import bodyParser from "body-parser";
-import createMarket from "./functions/createMarket.js";
-import getAllMarkets  from "./functions/getAllMarkets.js";
-import getCurrentMarket from "./functions/getCurrentMarket.js";
-import updateMarket from "./functions/updateMarket.js";
-import getOutcomes from "./functions/getOutcomes.js";
-import addLiquidity from "./functions/AddLiquidity.js";
-import getMinSharesBuy from "./functions/getMinSharesBuy.js";
-import getMarketsforUsers from "./functions/getMarketsForUser.js";
-import getMinAmountSell from "./functions/getMinAmountOnSellShares.js";
-import settleMarket from "./functions/settleMarket.js";
+import createMarket from "../functions/createMarket.js";
+import getAllMarkets  from "../functions/getAllMarkets.js";
+import getCurrentMarket from "../functions/getCurrentMarket.js";
+import updateMarket from "../functions/updateMarket.js";
+import getOutcomes from "../functions/getOutcomes.js";
+import addLiquidity from "../functions/AddLiquidity.js";
+import getMinSharesBuy from "../functions/getMinSharesBuy.js";
+import getMarketsforUsers from "../functions/getMarketsForUser.js";
+import getMinAmountSell from "../functions/getMinAmountOnSellShares.js";
+import settleMarket from "../functions/settleMarket.js";
 const app=express();
-const PORT=4000;
+const PORT=3000;
 
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(express.json());
@@ -137,14 +137,11 @@ app.post("/create-market", async (req, res) => {
       console.log(err);
     }  
   })
-  
-app.get('/',(req,res)=>{
-    console.log("i got called");
-    res.send({
-        message:"Hi there"
-    })
-    
-})
+
+app.get("/", (req, res) => res.send("Express on Vercel"));
+
 app.listen(PORT,()=>{
     console.log(`Listening on PORT : ${PORT}`)
 })
+
+export default app;
