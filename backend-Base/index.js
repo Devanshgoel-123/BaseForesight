@@ -1,16 +1,16 @@
 import express from "express"
 import cors from "cors";
 import bodyParser from "body-parser";
-import createMarket from "../functions/createMarket.js";
-import getAllMarkets  from "../functions/getAllMarkets.js";
-import getCurrentMarket from "../functions/getCurrentMarket.js";
-import updateMarket from "../functions/updateMarket.js";
-import getOutcomes from "../functions/getOutcomes.js";
-import addLiquidity from "../functions/AddLiquidity.js";
-import getMinSharesBuy from "../functions/getMinSharesBuy.js";
-import getMarketsforUsers from "../functions/getMarketsForUser.js";
-import getMinAmountSell from "../functions/getMinAmountOnSellShares.js";
-import settleMarket from "../functions/settleMarket.js";
+import createMarket from "./functions/createMarket.js";
+import getAllMarkets  from "./functions/getAllMarkets.js";
+import getCurrentMarket from "./functions/getCurrentMarket.js";
+import updateMarket from "./functions/updateMarket.js";
+import getOutcomes from "./functions/getOutcomes.js";
+import addLiquidity from "./functions/AddLiquidity.js";
+import getMinSharesBuy from "./functions/getMinSharesBuy.js";
+import getMarketsforUsers from "./functions/getMarketsForUser.js";
+import getMinAmountSell from "./functions/getMinAmountOnSellShares.js";
+import settleMarket from "./functions/settleMarket.js";
 const app=express();
 const PORT=4000;
 
