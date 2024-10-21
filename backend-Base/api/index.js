@@ -18,6 +18,12 @@ app.use(bodyParser.urlencoded({extended:true}));
 app.use(express.json());
 app.use(cors());
 
+app.use(cors({
+  origin: ['http://localhost:3000', 'https://your-production-domain.com'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
 app.post("/settleMarket",async(req,res)=>{
   console.log("Trying to Settle");
   try{
