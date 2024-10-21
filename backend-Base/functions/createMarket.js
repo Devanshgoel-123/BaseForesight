@@ -15,6 +15,16 @@ export default async function createMarket({
   category,
   fightImage,
 }) {
+  console.log({
+    deadline,
+    description,
+    icon,
+    question,
+    outcome1,
+    outcome2,
+    category,
+    fightImage,
+  })
   console.log("I am active now");
   const {contractAddress,abi}=contractData;
   const provider = new ethers.providers.JsonRpcProvider(`${process.env.ALCHEMY_NODE_API}`);
@@ -22,6 +32,7 @@ export default async function createMarket({
   const deadlineIn = Math.floor(new Date(deadline).getTime() / 1000);
   const marketContract =new ethers.Contract(contractAddress,abi, signer); 
 try{
+    
   const tx = await marketContract.initMarket(
     [
     outcome1,
@@ -74,7 +85,7 @@ try{
         numSharesInPool:outcomeShares,
       },
     ],
-    fightimage: fightImage,
+    fight_image: fightImage,
   });
 
   if (error) {

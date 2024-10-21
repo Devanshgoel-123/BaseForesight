@@ -16,13 +16,14 @@ const PORT=4000;
 
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(express.json());
-app.use(cors());
 
-app.use(cors({
-  origin: ['http://localhost:3000', 'https://your-production-domain.com'],
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
+
+const corsOptions = {
+  origin: "http://localhost:3000", // Change this to the specific origin of your frontend app
+  methods: "GET,POST", // Add other methods as needed
+  allowedHeaders: "Content-Type,Authorization", // Add other headers as needed
+}
+app.use(cors(corsOptions));
 
 app.post("/settleMarket",async(req,res)=>{
   console.log("Trying to Settle");
