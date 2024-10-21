@@ -84,8 +84,9 @@ try{
   }
   return "Market Created Successfully"
 }catch(err){
-  return "Some error has Occured"
   console.log(err);
+  return "Some error has Occured"
+  
 }
   
 }
