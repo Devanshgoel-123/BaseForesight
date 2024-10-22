@@ -127,7 +127,7 @@ function removeFunding(uint128 fundsToRemove) public payable {
         require(investmentAmount > 0, "Investment must be positive");
         require(marketId <= numMarkets, "Invalid market ID");
         
-        // Convert ETH investment to USDC equivalent (6 decimals)
+        
         uint256 usdcEquivalent = convertEthToUsdc(investmentAmount);
         
         FPMMStructs.FPMMMarket storage market = markets[marketId];
@@ -193,7 +193,7 @@ function removeFunding(uint128 fundsToRemove) public payable {
         feesAccrued += (usdcEquivalent * fee) / 100;
 
         uint256 treasuryEthAmount = convertUsdcToEth((usdcEquivalent * treasuryFee) / 100);
-        payable(treasuryWallet).transfer(treasuryEthAmount * 10**12); // Scale back to 18 decimals for transfer
+        payable(treasuryWallet).transfer(treasuryEthAmount * 10**12); 
 
         uint128 investmentAmountMinusFees = uint128(usdcEquivalent) - 
             uint128((usdcEquivalent * fee / 100)) - 
