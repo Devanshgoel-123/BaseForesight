@@ -119,6 +119,7 @@ app.post("/create-market", async (req, res) => {
   app.post("/update-market", async (req, res) => {
     try {
       let { marketId, outcomeIndex, amount, isBuy, sharesUpdated } = req.body;
+      console.log(req.body);
       await updateMarket(marketId, outcomeIndex, amount, isBuy, sharesUpdated); 
       res.status(200).send("Market Updated!");
     } catch (error) {
