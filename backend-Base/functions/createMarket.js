@@ -61,7 +61,7 @@ try{
 
   const newMarketId = latestMarket ? latestMarket.market_id + 1 : 1;
   const sharesInPool = (currentLiq); 
-  const outcomeShares = parseFloat(sharesInPool)/2;
+  const outcomeShares = parseFloat(sharesInPool)/10/2;
   console.log(outcomeShares);
   const { data, error } = await supabase.from("Markets").insert({
     market_id: newMarketId,

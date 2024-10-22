@@ -28,9 +28,9 @@ app.use(cors(corsOptions));
 app.post("/settleMarket",async(req,res)=>{
   console.log("Trying to Settle");
   try{
-    const {marketId}=req.body;
+    const {marketId,outcomeIndex}=req.body;
     console.log("trying to settle")
-    const response=await settleMarket(marketId);
+    const response=await settleMarket(marketId,outcomeIndex);
     return response;
   }catch(err){
     console.log(err);
@@ -66,7 +66,6 @@ app.get('/getmarketsforUser/:address',async(req,res)=>{
   try{
     const address=req.params.address;
     const response=await getMarketsforUsers(address);
-    console.log("THe received response is :",response);
     res.status(200).send(response)
   }catch(err){
     console.log(err);
@@ -110,7 +109,6 @@ app.post("/create-market", async (req, res) => {
   app.get("/get-all-markets", async (req, res) => {
     try {
       const data = await getAllMarkets();
-      console.log(data)
       res.status(200).send(data);
     } catch (error) {
       console.error("Error getting all markets:", error);

@@ -3,9 +3,7 @@ import dotenv from "dotenv";
 dotenv.config()
 // Create a single supabase client for interacting with your database
 export default async function updateMarket(marketId, outcomeIndex, amount, isBuy, sharesUpdated) {
-
-    console.log(marketId, outcomeIndex, amount, isBuy, sharesUpdated);
-
+    console.log("THe amount is :",amount);
     const supabase = createClient(
         `${process.env.SUPA_BASE_URL}`,
         `${process.env.SUPA_BASE_KEY}`
@@ -19,19 +17,19 @@ export default async function updateMarket(marketId, outcomeIndex, amount, isBuy
         console.log("The outcomes is:",outcome);
         if (isBuy) {
             if (i == outcomeIndex) {
-                outcome.numSharesInPool = parseInt(outcome.numSharesInPool) + parseInt(amount) - parseInt(sharesUpdated);
+                outcome.numSharesInPool = Number(outcome.numSharesInPool) + Number(amount) - Number(sharesUpdated);
                 console.log(outcome.numSharesInPool)
             } else {
-                outcome.numSharesInPool= parseInt(outcome.numSharesInPool) + parseInt(amount);
+                outcome.numSharesInPool= Number(outcome.numSharesInPool) + Number(amount);
                 console.log(outcome.numSharesInPool)
             }
         }
         else {
             if (i == outcomeIndex) {
-                outcome.numSharesInPool = parseInt(outcome.numSharesInPool) + parseInt(sharesUpdated) - parseInt(amount);
+                outcome.numSharesInPool = Number(outcome.numSharesInPool) + Number(sharesUpdated) - Number(amount);
                 console.log(outcome.numSharesInPool)
             } else {
-                outcome.numSharesInPool = parseInt(outcome.numSharesInPool) - parseInt(amount);
+                outcome.numSharesInPool = Number(outcome.numSharesInPool) - Number(amount);
                 console.log(outcome.numSharesInPool)
             }
         }
