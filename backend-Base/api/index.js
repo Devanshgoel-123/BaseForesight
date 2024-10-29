@@ -24,6 +24,13 @@ const corsOptions = {
   allowedHeaders: "Content-Type,Authorization", // Add other headers as needed
 }
 app.use(cors(corsOptions));
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", ["https://base-forecast-frontend-final-deployment.vercel.app","https://base-forecast-frontend-final-deployment.vercel.app/admin"]);
+  res.header("Access-Control-Allow-Methods", "GET,POST");
+  res.header("Access-Control-Allow-Headers", "Content-Type,Authorization");
+  next();
+});
+
 
 app.post("/settleMarket",async(req,res)=>{
   console.log("Trying to Settle");
